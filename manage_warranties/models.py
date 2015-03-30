@@ -68,3 +68,8 @@ class Warranties(models.Model):
 
     class Meta:
         db_table = 'warranties'
+        
+class MessageHistory(models.Model):
+    id = models.AutoField(primary_key=True)
+    msg_text = models.CharField(max_length=450)
+
