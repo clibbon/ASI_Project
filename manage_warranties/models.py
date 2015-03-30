@@ -1,35 +1,70 @@
+# This is an auto-generated Django model module.
+# You'll have to do the following manually to clean this up:
+#   * Rearrange models' order
+#   * Make sure each model has one field with primary_key=True
+#   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
+# Feel free to rename the models, but don't rename db_table values or field names.
+#
+# Also note: You'll have to insert the output of 'django-admin.py sqlcustom [app_label]'
+# into your database.
+from __future__ import unicode_literals
+
 from django.db import models
 
-# Customer
-class Customer(models.Model):
-    cId = models.IntegerField(primary_key=True)
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=30)
-    mob_number = models.CharField(max_length=11)
-    region = models.IntegerField(defaul=0)
+class Customers(models.Model):
+    cid = models.IntegerField(db_column='cID', primary_key=True)  # Field name made lowercase.
+    first_name = models.CharField(max_length=30, blank=True)
+    last_name = models.CharField(max_length=30, blank=True)
+    mob_number = models.CharField(max_length=12, blank=True)
+    region = models.IntegerField(blank=True, null=True)
 
-# Importer
-class Importer(models.Model):
-    iId = models.IntegerField(primary_key=True)
-
-# Model
-class Product_Model(models.Model):
-    mId = models.IntegerField(primary_key=True)
-    verified = models.BooleanField(defaul=False)
-
-
-
-# Warranty 
-
-# Individual product
-class Product(models.Model):
-    serNum = models.CharField(max_length=20) # Not unique as only unique with model number
-    pId = models.IntegerField(primary_key=True)
-    mId = models.ForeignKey(Product_Model)
+    def __str__(self):
+        return self.first_name + ' ' + self.last_name
     
-# Product Seller
-class Product_Seller(models.Model):
-    iId = models.ForeignKey(Importer)
-    pId = models.ForeignKey(Product)
-    regId =s    
-    
+    class Meta:
+        db_table = 'customers'
+
+class Importers(models.Model):
+    iid = models.IntegerField(db_column='iID', primary_key=True)  # Field name made lowercase.
+    identity = models.CharField(max_length=30, blank=True)
+
+    class Meta:
+        db_table = 'importers'
+
+
+class ProductModels(models.Model):
+    mid = models.IntegerField(db_column='mID', primary_key=True)  # Field name made lowercase.
+    model = models.CharField(max_length=20, blank=True)
+    is_verified = models.BooleanField(default=False)
+
+    class Meta:
+        db_table = 'product_models'
+
+
+class ProductSellers(models.Model):
+    iid = models.IntegerField(db_column='iID')  # Field name made lowercase.
+    pid = models.IntegerField(db_column='pID', primary_key=True)  # Field name made lowercase.
+    imp_date = models.DateField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'product_sellers'
+
+
+class Products(models.Model):
+    pid = models.IntegerField(db_column='pID', primary_key=True)  # Field name made lowercase.
+    ser_num = models.CharField(max_length=30, blank=True)
+    model = models.CharField(max_length=20, blank=True)
+
+    class Meta:
+        db_table = 'products'
+
+
+class Warranties(models.Model):
+    cid = models.IntegerField(db_column='cID')  # Field name made lowercase.
+    pid = models.IntegerField(db_column='pID', primary_key=True)  # Field name made lowercase.
+    ser_num = models.CharField(max_length=30, blank=True)
+    reg_date = models.DateField(blank=True, null=True)
+    exp_date = models.DateField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'warranties'

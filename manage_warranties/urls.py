@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
+from manage_warranties import views
 
 
 urlpatterns = patterns('',
@@ -7,6 +8,7 @@ urlpatterns = patterns('',
     # url(r'^$', 'Warranty_bank.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
 
-    url(r'^admin/', include(admin.site.urls)),
-    url(r'^', include('manage_warranties.urls')),
+    url(r'^$', views.index, name='index'),
+    url(r'^importers', views.importer_page, name = 'importer page'),
+    url(r'^info', views.information_page, name = 'info page')
 )
