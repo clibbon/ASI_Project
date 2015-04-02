@@ -19,9 +19,10 @@ def text_receiver(request):
     resp = twilio.twiml.Response()
     resp.message("A successful response")
     
-    temp = MessageHistory(msg_text = request.body)
-    temp.save()
-    return resp
+    #temp = MessageHistory(msg_text = request.body)
+    #temp.save()
+    yourMsg = request.body;
+    return HttpResponse(yourMsg)
 
 def message_table(request):
     messages = MessageHistory.objects.all()

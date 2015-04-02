@@ -60,12 +60,12 @@ WSGI_APPLICATION = 'Warranty_bank.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'warranties',
-        'USER': 'root',
-        'PASSWORD': 'qqqqqq',
-        'HOST': '127.0.0.1',
-        'PORT': '',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'dd7ibptclqs5v3',
+        'USER': 'qqibippvqclxlk',
+        'PASSWORD': 'v5Jytc-E53ZVYpfmD1LWvyDWDq',
+        'HOST': 'ec2-184-73-194-196.compute-1.amazonaws.com',
+        'PORT': '5432',
     }
 }
 
