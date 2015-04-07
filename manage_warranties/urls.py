@@ -10,5 +10,6 @@ urlpatterns = patterns('',
     url(r'^$', views.index, name='index'),
     url(r'^importers', views.importer_page, name = 'importer page'),
     url(r'^info', views.information_page, name = 'info page'),
-    url(r'^receiver', views.text_receiver, name = 'Text receiver')
+    url(r'^receiver', views.text_receiver, name = 'Text receiver'),
+    url(r'^messages', views.message_table, name = 'Message history')
 )
