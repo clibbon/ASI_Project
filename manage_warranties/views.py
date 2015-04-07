@@ -17,13 +17,14 @@ def information_page(request):
 @twilio_view
 def text_receiver(request):
     resp = twilio.twiml.Response()
+    print request
     # resp.message("A successful response")
     yourMsg = request.body
     whoDidIt = request.META['HTTP_FROM']
     resp.message(yourMsg + ' from ' + whoDidIt)
     #temp = MessageHistory(msg_text = request.Body)
     #temp.save()
-    #print request
+    
    
     return resp #HttpResponse(yourMsg + ' from ' + whoDidIt)
 
