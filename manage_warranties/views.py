@@ -8,7 +8,6 @@ import os
 
 # Create your views here.
 def index(request):
-    print(os.listdir('.'))
     return HttpResponse("Welcome to the index") 
 
 def importer_page(request):
@@ -33,7 +32,7 @@ def text_receiver(request):
         in this order Forename Surname SerialNo ModelNo Region')
     
     
-    resp.message('Message received')
+    #resp.message('Message received')
     
     # Save the information
     #temp = MessageHistory(msg_text = request.Body)
