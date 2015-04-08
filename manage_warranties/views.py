@@ -2,10 +2,13 @@ from django.shortcuts import render
 from django.http import HttpResponse
 import twilio.twiml
 from django_twilio.decorators import twilio_view
-from manage_warranties.models import MessageHistory
+from text_funs import *
+from db_funs import *
+import os
 
 # Create your views here.
 def index(request):
+    print(os.listdir('.'))
     return HttpResponse("Welcome to the index") 
 
 def importer_page(request):
@@ -17,11 +20,22 @@ def information_page(request):
 @twilio_view
 def text_receiver(request):
     resp = twilio.twiml.Response()
-    print request
-    # resp.message("A successful response")
-    yourMsg = request.body
-    whoDidIt = request.META['HTTP_FROM']
-    resp.message(yourMsg + ' from ' + whoDidIt)
+    msgText = request.POST.__getitem__('Body')
+    msgSender = request.POST.__getitem__('From')
+    saveMsgHistory(msgText, msgSender)
+    
+    # See if we can parse information
+    try: 
+        details = getTextInfo(msgText) # Details is a tuple containing (serNum, modelNum, region, forename, surname)
+        resp.message(generateSuccessReply(details))
+    except AppError:
+        resp.message('Sorry your information could not be read. Please enter it \
+        in this order Forename Surname SerialNo ModelNo Region')
+    
+    
+    resp.message('Message received')
+    
+    # Save the information
     #temp = MessageHistory(msg_text = request.Body)
     #temp.save()
     

@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 import os
 from test_project.settings import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-
+#SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
