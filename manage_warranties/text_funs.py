@@ -25,7 +25,6 @@ def getTextInfo(message):
         
     # Split the text up
     words = message.split()
-    
     # Identify model no and serial no
     serNum, modelNum, words = findModelNums(words)
     # Find the region

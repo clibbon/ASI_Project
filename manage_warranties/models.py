@@ -15,7 +15,7 @@ class Customers(models.Model):
     cid = models.IntegerField(db_column='cID', primary_key=True)  # Field name made lowercase.
     first_name = models.CharField(max_length=30, blank=True)
     last_name = models.CharField(max_length=30, blank=True)
-    mob_number = models.CharField(max_length=12, blank=True)
+    mob_number = models.CharField(max_length=24, blank=True)
     region = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
