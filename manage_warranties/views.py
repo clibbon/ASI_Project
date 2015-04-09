@@ -18,11 +18,20 @@ def information_page(request):
 
 @twilio_view
 def text_receiver(request):
+    print request
     resp = twilio.twiml.Response()
+    print resp
     msgText = request.POST.__getitem__('Body')
+    print msgText
     msgSender = request.POST.__getitem__('From')
-    saveMsgHistory(msgText, msgSender)
+    try:
+        saveMsgHistory(msgText, msgSender)
+    except AppError:
+        print 'Cant save'
     
+    
+    
+
     # See if we can parse information
     try: 
         details = getTextInfo(msgText) # Details is a tuple containing (serNum, modelNum, region, forename, surname)
