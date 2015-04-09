@@ -5,6 +5,7 @@ from django_twilio.decorators import twilio_view
 from text_funs import *
 from db_funs import *
 import os
+from __main__ import ERROR
 
 # Create your views here.
 def index(request):
@@ -28,6 +29,8 @@ def text_receiver(request):
         saveMsgHistory(msgText, msgSender)
     except AppError:
         print 'Cant save'
+    except ERROR as e:
+        print e
     
     
     
@@ -39,6 +42,8 @@ def text_receiver(request):
     except AppError:
         resp.message('Sorry your information could not be read. Please enter it \
         in this order Forename Surname SerialNo ModelNo Region')
+    except ERROR as e:
+        print e
     
     
     #resp.message('Message received')
@@ -47,8 +52,8 @@ def text_receiver(request):
     #temp = MessageHistory(msg_text = request.Body)
     #temp.save()
     
-   
-    return resp #HttpResponse(yourMsg + ' from ' + whoDidIt)
+    print resp
+    return 'Success' #HttpResponse(yourMsg + ' from ' + whoDidIt)
 
 def message_table(request):
     messages = MessageHistory.objects.all()
