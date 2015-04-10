@@ -9,38 +9,41 @@ Functions for saving the data to the database in django,
 """
 
 from datetime import datetime
-from manage_warranties.models import MessageHistory
+from manage_warranties.models import MessageHistory, Customers
 
+# Function to save incoming message to msg log
 def saveMsgHistory(message, sender):
     MessageHistory.objects.create(msg_text = message, 
                                   date_received = datetime.now().date(), \
-                                  mob_number = sender)
+                                  mob_number = sender)  
 
-def saveMessageInfo(details, sender, message):
-    ''' Details is a tuple containing (serNum, modelNum, region, 
-    forename, surname), and sender is a string of the sender number
-    '''
-    print details[3]
-    print details[4]
-    # Save to the message history    
-    
                         
-def generateSuccessReply(details):
-    detailDict = {
-    'FName' : details[3],
-    'SName' : details[4],
-    'SerNo' : details[0],
-    'ModNo' : details[1],
-    'Region': details[2]
-    }
+# Function to generate a response
+def generateSuccessReply(detailDict):
     
-    msgText = ('''Thankyou for registering. Your details are 
-    Name %(FName)s %(SName)s,
-    SerNo %(SerNo)s, Model %(ModNo)s, Region %(Region)s.
-    If this is incorrect reply with the word
-    RETRY''' % detailDict)
+    msgText = (
+        'Thankyou for registering. Your details are: '
+        'Name - %(ForeName)s %(SurName)s, \n'
+        'SerNo -  %(SerNo)s, \n' 
+        'Model %(ModNo)s, \n'
+        'Region %(Region)s. \n'
+        'If this is incorrect reply with the word RETRY'
+        % detailDict)
     return msgText
     
+def checkCustomer(detailDict,mob_num):
+    c = Customers.objects.get_or_create(
+        first_name = detailDict['ForeName'],
+        last_name = detailDict['SurName'],
+        mob_number = mob_num,
+        region = detailDict['Region']
+        )
+    return c
+
+def addToDatabase():
+    pass
+
+
     '''
     # First customer
     try:

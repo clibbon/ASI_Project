@@ -11,5 +11,6 @@ urlpatterns = patterns('',
     url(r'^importers', views.importer_page, name = 'importer page'),
     url(r'^info', views.information_page, name = 'info page'),
     url(r'^receiver', views.text_receiver, name = 'Text receiver'),
-    url(r'^messages', views.message_table, name = 'Message history')
+    url(r'^messages', views.message_table, name = 'Message history'),
+    url(r'^test_cookie',views.cookie_test, name = 'Cookie  test')
 )

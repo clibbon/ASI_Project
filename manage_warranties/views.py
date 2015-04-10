@@ -9,55 +9,70 @@ from db_funs import *
 def index(request):
     return HttpResponse("Welcome to the index") 
 
+# Importer page
 def importer_page(request):
     return HttpResponse("Welcome to the importers page")
 
+# Main dashboard page
 def information_page(request):
     return HttpResponse("Welcome to the information page")
 
+# Test page for cookies
 @twilio_view
-def text_receiver(request):
-    print request
+def cookie_test(request):
+    count = request.COOKIES.get('counter',0)
+    print count
     resp = twilio.twiml.Response()
     print resp
+    resp.message("There were " + str(count) + " messages")
+    
+    resp = HttpResponse(resp)
+    resp.set_cookie("counter", value=str(int(count) + 1))
+    
+    return resp
+
+# Main page for handling text messages
+@twilio_view
+def text_receiver(request):
+    resp = twilio.twiml.Response()
     msgText = request.POST.__getitem__('Body')
-    print msgText
     msgSender = request.POST.__getitem__('From')
+    
+    # Try to save the message
     try:
         saveMsgHistory(msgText, msgSender)
-    except AppError:
-        print 'Cant save'
+    except AppError as e:
+        print e
+        print 'Failed to save message'
     except Exception as e:
         print e
     
-    
-    
+    # Check for keywords
+    keyWord = getKeyWord(msgText)
+    if keyWord == 'CORRECT':
+        try:
+            # Add to database
+            addToDatabase()
+        except Exception as e:
+            print e
+    else:
+        # Parse the text
+        details = getTextInfo(msgText)
+        try:
+            resp.message(generateSuccessReply(details))
+        except AppError as e:
+            print e
+            resp.message(
+                        'Sorry your information could not be read. '
+                        'Please enter it in this order: '
+                        'Forename Surname SerialNo ModelNo Region')
+        except Exception as e:
+            print e
 
-    # See if we can parse information
-    try: 
-        details = getTextInfo(msgText) # Details is a tuple containing (serNum, modelNum, region, forename, surname)
-        resp.message(generateSuccessReply(details))
-    except AppError:
-        resp.message('Sorry your information could not be read. Please enter it \
-        in this order Forename Surname SerialNo ModelNo Region')
-    except Exception as e:
-        print e
-    
-    
-    #resp.message('Message received')
-    
-    # Save the information
-    #temp = MessageHistory(msg_text = request.Body)
-    #temp.save()
-    
-    print resp
-    return resp#HttpResponse(yourMsg + ' from ' + whoDidIt)
+    return resp
 
+# Page for displaying received messages in a nice format
 def message_table(request):
     messages = MessageHistory.objects.all()
     context = {'latest_question_list': messages}
     return render(request, 'Listener/message_table.html', context)
-
-def message_history(request):
-    messages = MessageHistory.objects.all()
-    return HttpResponse("")

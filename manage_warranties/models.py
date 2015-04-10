@@ -23,6 +23,7 @@ class Customers(models.Model):
     
     class Meta:
         db_table = 'customers'
+        verbose_name_plural = 'customers'
 
 class Importers(models.Model):
     iid = models.IntegerField(db_column='iID', primary_key=True)  # Field name made lowercase.
@@ -30,7 +31,7 @@ class Importers(models.Model):
 
     class Meta:
         db_table = 'importers'
-
+        verbose_name_plural = 'importers'
 
 class ProductModels(models.Model):
     mid = models.IntegerField(db_column='mID', primary_key=True)  # Field name made lowercase.
@@ -39,6 +40,7 @@ class ProductModels(models.Model):
 
     class Meta:
         db_table = 'product_models'
+        verbose_name_plural = 'product_models'
 
 
 class ProductSellers(models.Model):
@@ -48,6 +50,7 @@ class ProductSellers(models.Model):
 
     class Meta:
         db_table = 'product_sellers'
+        verbose_name_plural = 'product_sellers'
 
 
 class Products(models.Model):
@@ -57,6 +60,7 @@ class Products(models.Model):
 
     class Meta:
         db_table = 'products'
+        verbose_name_plural = 'products'
 
 
 class Warranties(models.Model):
@@ -68,7 +72,9 @@ class Warranties(models.Model):
 
     class Meta:
         db_table = 'warranties'
-        
+        verbose_name_plural = 'warranties'
+
+
 class MessageHistory(models.Model):
     id = models.AutoField(primary_key=True)
     msg_text = models.CharField(max_length=450)
@@ -77,5 +83,6 @@ class MessageHistory(models.Model):
     
     class Meta:
         db_table = 'msg_history'
+        verbose_name_plural = 'msg_history'
 
 

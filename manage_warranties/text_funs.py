@@ -19,7 +19,7 @@ class AppError(Exception):
 
 
 
-def getTextInfo(message):
+def getTextInfo(message, debug=False):
     # Remove all non alpha numeric characters
     message = re.sub(r'([^\s\w]|_)+', '', message) 
         
@@ -36,7 +36,14 @@ def getTextInfo(message):
     # Find the names
     forename, surname = getNames(words)
     
-    return (serNum, modelNum, region, forename, surname)
+    detailDict = {
+    'ForeName' : forename,
+    'SurName' : surname,
+    'SerNo' : serNum,
+    'ModNo' : modelNum,
+    'Region': region
+    }
+    return detailDict
 
 def findModelNums(words):
     possibleMatches = [] 
@@ -47,17 +54,22 @@ def findModelNums(words):
     # Check for errors
     if len(possibleMatches) > 2:
         print possibleMatches
-        raise AppError('''Could not identify sernum/modnum, \
-        too many alphanumeric words''')
+        raise AppError(
+            'Could not identify serial number/model number,'
+            ' too many alphanumeric words')
     elif len(possibleMatches) < 2:
-        raise AppError('''To few matches found''')
+        raise AppError(
+            'To few serial number/model number '
+            'matches found')
+    
     # Find which is longest
     matchLengths = [len(i) for i in possibleMatches]
     
     # Check lengths aren't identical
     if matchLengths[0]==matchLengths[1]:
-        raise AppError('''Could not distinguish sernum as same 
-        length as model num''')
+        raise AppError(
+            'Could not distinguish serial number as same '
+            'length as model num')
     
     # Get the index of the serial
     idx = matchLengths.index(max(matchLengths))
@@ -71,7 +83,7 @@ def findModelNums(words):
 
 def getNames(properNouns):
     if len(properNouns) > 2:
-        raise AppError('Too many names')
+        raise AppError('Too many names discovered')
     return properNouns[0],properNouns[1]
     
 def findRegion(message):
@@ -100,31 +112,13 @@ def removeRegions(words):
     for word in words:
         temp = []
         for region in regions:
-            temp.append(fuzz.partial_ratio(word, region))
+            temp.append(fuzz.partial_ratio(word.lower(),
+                                           region.lower()))
         if max(temp) < 90:
             newList.append(word)
     return newList
         
 
-                
-    '''
-    This version won't work as places can have longer names
-def findRegion(words):
-    possibleRegions = [] # Selected region
-    matchWords = [] # Word which was matched
-    matchAmount = [] # How closely words match
-    for word in words:
-        match = process.extract(word,regions,limit=1)
-        if match[1] > 80:
-            matchWords.append(word)
-            possibleRegions.append(match[0])
-            matchAmount.append(match[1])
-    # Check for errors
-    if len(possibleRegions) == 0:
-        raise AppError('Could not identify a region')
-    
-    # Pick most likely match
-    idx = matchAmount.index(max(matchAmount))
-    words.remove(matchWords[idx])
-    return possibleRegions[idx]
-    '''
+def getKeyWord(msgText):
+    words = msgText.split()
+    return words[1]
