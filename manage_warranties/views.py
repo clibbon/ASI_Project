@@ -9,6 +9,12 @@ from db_funs import *
 def index(request):
     return HttpResponse("Welcome to the index") 
 
+# Test receiver.
+@twilio_view
+def test_bed(request):
+    
+    return HttpResponse("Thankyou for your message. You have saved 1!!! Jews")
+
 # Importer page
 def importer_page(request):
     return HttpResponse("Welcome to the importers page")
@@ -35,6 +41,7 @@ def cookie_test(request):
 @twilio_view
 def text_receiver(request):
     resp = twilio.twiml.Response()
+    # These need to be made robust at some point
     msgText = request.POST.__getitem__('Body')
     msgSender = request.POST.__getitem__('From')
     
@@ -51,15 +58,20 @@ def text_receiver(request):
     keyWord = getKeyWord(msgText)
     if keyWord == 'CORRECT':
         try:
+            detailDict = getDetailsFromCookie(request)
             # Add to database
             addToDatabase()
         except Exception as e:
             print e
     else:
         # Parse the text
-        details = getTextInfo(msgText)
         try:
+            details = getTextInfo(msgText)
+        
             resp.message(generateSuccessReply(details))
+            resp = HttpResponse(resp)
+            # Store cookie
+            resp = addDetailsToCookie(details)
         except AppError as e:
             print e
             resp.message(
