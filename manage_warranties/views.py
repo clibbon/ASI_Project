@@ -12,8 +12,10 @@ def index(request):
 # Test receiver.
 @twilio_view
 def test_bed(request):
-    
-    return HttpResponse("Thankyou for your message. You have saved 1!!! Jews")
+    resp = twilio.twiml.Response()
+    resp.message("Thankyou for your message. You have saved 1!!! Jews")
+    return resp 
+
 
 # Importer page
 def importer_page(request):
