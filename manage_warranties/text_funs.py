@@ -45,6 +45,31 @@ def getTextInfo(message, debug=False):
     }
     return detailDict
 
+# Function adds details to the response cookie
+def addDetailsToCookie(details,response):
+    response.set_cookie("ForeName", value=details['ForeName'])
+    response.set_cookie("SurName", value=details['SurName'])
+    response.set_cookie("SerNo", value=details['SerNo'])
+    response.set_cookie("ModNo", value=details['ModNo'])
+    response.set_cookie("Region",value=details['Region'])
+    return response
+
+def getDetailsFromCookie(request):
+    detailDict = {
+    'ForeName' : request.COOKIES.get('ForeName',''),
+    'SurName' : request.COOKIES.get('SurName',''),
+    'SerNo' : request.COOKIES.get('SerNo',''),
+    'ModNo' : request.COOKIES.get('ModNo',''),
+    'Region': request.COOKIES.get('Region',0)
+    }
+    
+    # Check that we've still got the cookie
+    if detailDict['ForeName']=='':
+        raise AppError(
+        'Cookie has either timed out, or could not be '
+        'loaded properly')
+    return detailDict
+
 def findModelNums(words):
     possibleMatches = [] 
     for word in words:
@@ -118,7 +143,16 @@ def removeRegions(words):
             newList.append(word)
     return newList
         
-
+# Function extracts keywords from the message (it's the first word)
 def getKeyWord(msgText):
     words = msgText.split()
-    return words[1]
+    return words[0]
+
+# Receipt on successful generation of new warranty
+def generateConfirmationReply(pId, cId):
+    return 'Warranty confirmed'
+    
+# Reponse to existing warranty
+def existingWarrantyReply(pId, cId):
+    return 'Warranty already exists'
+    

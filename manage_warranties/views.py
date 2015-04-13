@@ -4,6 +4,7 @@ import twilio.twiml
 from django_twilio.decorators import twilio_view
 from text_funs import *
 from db_funs import *
+import sys
 
 # Create your views here.
 def index(request):
@@ -13,7 +14,7 @@ def index(request):
 @twilio_view
 def test_bed(request):
     resp = twilio.twiml.Response()
-    resp.message("Thankyou for your message. You have saved 1!!! Jews")
+    resp.message("Message received")
     return resp 
 
 
@@ -43,9 +44,12 @@ def cookie_test(request):
 @twilio_view
 def text_receiver(request):
     resp = twilio.twiml.Response()
-    # These need to be made robust at some point
-    msgText = request.POST.__getitem__('Body')
-    msgSender = request.POST.__getitem__('From')
+    # Try to read the text and the sender
+    try:
+        msgText = request.POST.__getitem__('Body')
+        msgSender = request.POST.__getitem__('From')
+    except Exception as e:
+        print e
     
     # Try to save the message
     try:
@@ -62,9 +66,14 @@ def text_receiver(request):
         try:
             detailDict = getDetailsFromCookie(request)
             # Add to database
-            addToDatabase()
+            warCreated, pId, cId = addToDatabase(detailDict,msgSender)
+            if warCreated:
+                resp.message(generateConfirmationReply(pId, cId))
+            else:
+                resp.message(existingWarrantyReply(pId, cId))
         except Exception as e:
             print e
+            print sys.exc_traceback.tb_lineno
     else:
         # Parse the text
         try:
@@ -73,7 +82,7 @@ def text_receiver(request):
             resp.message(generateSuccessReply(details))
             resp = HttpResponse(resp)
             # Store cookie
-            resp = addDetailsToCookie(details)
+            resp = addDetailsToCookie(details,resp)
         except AppError as e:
             print e
             resp.message(
@@ -82,7 +91,8 @@ def text_receiver(request):
                         'Forename Surname SerialNo ModelNo Region')
         except Exception as e:
             print e
-
+            
+    print resp
     return resp
 
 # Page for displaying received messages in a nice format

@@ -9,7 +9,7 @@ class CustomerAdmin(admin.ModelAdmin):
         ('Name',      {'fields':
                      ['first_name','last_name']}),
         ('Details', {'fields':
-                     ['cid','mob_number','region']})
+                     ['mob_number','region']})
                  ]
 
 class ProductModelAdmin(admin.ModelAdmin):

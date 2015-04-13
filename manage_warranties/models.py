@@ -12,7 +12,7 @@ from __future__ import unicode_literals
 from django.db import models
 
 class Customers(models.Model):
-    cid = models.IntegerField(db_column='cID', primary_key=True)  # Field name made lowercase.
+    cid = models.AutoField(primary_key=True)  # Field name made lowercase.
     first_name = models.CharField(max_length=30, blank=True)
     last_name = models.CharField(max_length=30, blank=True)
     mob_number = models.CharField(max_length=24, blank=True)
@@ -26,7 +26,7 @@ class Customers(models.Model):
         verbose_name_plural = 'customers'
 
 class Importers(models.Model):
-    iid = models.IntegerField(db_column='iID', primary_key=True)  # Field name made lowercase.
+    iid = models.AutoField(primary_key=True)  # Field name made lowercase.
     identity = models.CharField(max_length=30, blank=True)
 
     class Meta:
@@ -34,7 +34,7 @@ class Importers(models.Model):
         verbose_name_plural = 'importers'
 
 class ProductModels(models.Model):
-    mid = models.IntegerField(db_column='mID', primary_key=True)  # Field name made lowercase.
+    mid = models.AutoField(primary_key=True)  # Field name made lowercase.
     model = models.CharField(max_length=20, blank=True)
     is_verified = models.BooleanField(default=False)
 
@@ -44,8 +44,8 @@ class ProductModels(models.Model):
 
 
 class ProductSellers(models.Model):
-    iid = models.IntegerField(db_column='iID')  # Field name made lowercase.
-    pid = models.IntegerField(db_column='pID', primary_key=True)  # Field name made lowercase.
+    iid = models.IntegerField()  # Field name made lowercase.
+    pid = models.AutoField(primary_key=True)  # Field name made lowercase.
     imp_date = models.DateField(blank=True, null=True)
 
     class Meta:
@@ -54,7 +54,7 @@ class ProductSellers(models.Model):
 
 
 class Products(models.Model):
-    pid = models.IntegerField(db_column='pID', primary_key=True)  # Field name made lowercase.
+    pid = models.AutoField(primary_key=True)  # Field name made lowercase.
     ser_num = models.CharField(max_length=30, blank=True)
     model = models.CharField(max_length=20, blank=True)
 
@@ -64,8 +64,8 @@ class Products(models.Model):
 
 
 class Warranties(models.Model):
-    cid = models.IntegerField(db_column='cID')  # Field name made lowercase.
-    pid = models.IntegerField(db_column='pID', primary_key=True)  # Field name made lowercase.
+    cid = models.IntegerField()  # Field name made lowercase.
+    pid = models.AutoField(primary_key=True)  # Field name made lowercase.
     ser_num = models.CharField(max_length=30, blank=True)
     reg_date = models.DateField(blank=True, null=True)
     exp_date = models.DateField(blank=True, null=True)
