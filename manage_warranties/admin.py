@@ -5,22 +5,24 @@ from manage_warranties.models import (Customers, Products, ProductSellers,
 
 # Define field views
 class CustomerAdmin(admin.ModelAdmin):
+    list_display = ('first_name','last_name','mob_number','past_messages')
     fieldsets = [
         ('Name',      {'fields':
                      ['first_name','last_name']}),
         ('Details', {'fields':
-                     ['mob_number','region']})
+                     ['mob_number','region','cust_test']})
                  ]
+                 
 
 class ProductModelAdmin(admin.ModelAdmin):
     list_display = ('model','mid', 'is_verified')
     
 class WarrantyAdmin(admin.ModelAdmin):
-    list_display = ('cid','reg_date','exp_date')
-    list_filter = ['exp_date']
+    list_display = ('cid','reg_date','exp_date', 'customer_name')
+    list_filter = ['reg_date']
 
 class MessageAdmin(admin.ModelAdmin):
-    list_display = ('date_received', )
+    list_display = ('date_received', 'mob_number', 'msg_text')
     list_filter = ['date_received']
 
 # Register your models here.

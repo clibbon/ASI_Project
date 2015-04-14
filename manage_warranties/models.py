@@ -17,7 +17,19 @@ class Customers(models.Model):
     last_name = models.CharField(max_length=30, blank=True)
     mob_number = models.CharField(max_length=24, blank=True)
     region = models.IntegerField(blank=True, null=True)
-
+    
+    # To show message history
+    def past_messages(self):
+        try:
+            qset = MessageHistory.objects.raw('''
+            SELECT * FROM msg_history
+            WHERE mob_number = %s''',
+            [self.mob_number])[0]
+           
+            return qset
+        except IndexError:
+            return 'ERROR -no cust in db'
+        
     def __str__(self):
         return self.first_name + ' ' + self.last_name
     
@@ -69,7 +81,18 @@ class Warranties(models.Model):
     ser_num = models.CharField(max_length=30, blank=True)
     reg_date = models.DateField(blank=True, null=True)
     exp_date = models.DateField(blank=True, null=True)
-
+    
+    # Add a field to show the customers name
+    def customer_name(self):
+        try:
+            c = Customers.objects.raw('''
+            SELECT * FROM customers
+            WHERE cid = %s''',
+            [self.cid])[0]
+            return c.first_name + ' ' + c.last_name
+        except IndexError:
+            return 'ERROR -no cust in db'
+    
     class Meta:
         db_table = 'warranties'
         verbose_name_plural = 'warranties'
@@ -80,6 +103,9 @@ class MessageHistory(models.Model):
     msg_text = models.CharField(max_length=450)
     date_received = models.DateField(blank=True, null=True)
     mob_number = models.CharField(max_length=24, blank=True)
+    
+    def __str__(self):
+        return self.msg_text
     
     class Meta:
         db_table = 'msg_history'

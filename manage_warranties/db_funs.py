@@ -24,12 +24,13 @@ def saveMsgHistory(message, sender):
 def generateSuccessReply(detailDict):
     
     msgText = (
-        'Thankyou for registering. Your details are: '
+        'Thankyou for registering. Your details are: \n'
         'Name - %(ForeName)s %(SurName)s, \n'
         'SerNo -  %(SerNo)s, \n' 
         'Model %(ModNo)s, \n'
         'Region %(Region)s. \n'
-        'If this is incorrect reply with the word RETRY'
+        'If these are correct, reply CORRECT to receive your receipt. If wrong'
+        ' reply RETRY.'
         % detailDict)
     return msgText
     

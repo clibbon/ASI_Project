@@ -156,3 +156,14 @@ def generateConfirmationReply(pId, cId):
 def existingWarrantyReply(pId, cId):
     return 'Warranty already exists'
     
+# Function to generate a response
+def generateSuccessReplyDemo(detailDict):
+    
+    msgText = (
+        'Thankyou for registering. Your details are: \n'
+        'Name - %(ForeName)s %(SurName)s, \n'
+        'SerNo -  %(SerNo)s, \n' 
+        'Model %(ModNo)s, \n'
+        'Region %(Region)s. \n'
+        % detailDict)
+    return msgText

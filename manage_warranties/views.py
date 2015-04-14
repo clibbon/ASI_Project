@@ -5,6 +5,8 @@ from django_twilio.decorators import twilio_view
 from text_funs import *
 from db_funs import *
 import sys
+from twilio.rest import TwilioRestClient
+from Warranty_bank.settings import TWILIO_AUTH_TOKEN, TWILIO_ACCOUNT_SID
 
 # Create your views here.
 def index(request):
@@ -39,6 +41,36 @@ def cookie_test(request):
     resp.set_cookie("counter", value=str(int(count) + 1))
     
     return resp
+
+# Demo day page - more robust and forwards message on to me
+@twilio_view
+def demo_day_receiver(request):
+    # Overarching try statement just in case
+    errormessage = 'Sorry your information could not be read. ' \
+                'Please enter it in this order: ' \
+                'Forename Surname SerialNo ModelNo Region'
+    resp = twilio.twiml.Response()
+    try:
+        msgText = request.POST.__getitem__('Body')
+        msgSender = request.POST.__getitem__('From')
+    except Exception as e:
+        print e
+    # Try to get details
+    try:
+        details = getTextInfo(msgText)
+        resp.message(generateSuccessReplyDemo(details))
+        # Send message to my phone
+        client = TwilioRestClient(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+        client.message.create(to="+447759339709",
+                              from_="+441475866042",
+                              generateSuccessReplyDemo(details))
+    except AppError as e:
+        print e
+        resp.message(errormessage)
+    except Exception as e:
+        print e
+        resp.message(errormessage)
+        
 
 # Main page for handling text messages
 @twilio_view
