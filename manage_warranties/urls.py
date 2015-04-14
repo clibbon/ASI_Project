@@ -13,5 +13,5 @@ urlpatterns = patterns('',
     url(r'^receiver', views.text_receiver, name = 'Text receiver'),
     url(r'^messages', views.message_table, name = 'Message history'),
     url(r'^test_cookie',views.cookie_test, name = 'Cookie  test'),
-    url(r'^test_receiver',views.test_bed, name = 'Test bed')
+    url(r'^test_receiver',views.demo_day_receiver, name = 'Test bed')
 )
