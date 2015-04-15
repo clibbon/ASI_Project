@@ -116,7 +116,11 @@ def getNames(properNouns):
         raise AppError('Too many names discovered')
     elif len(properNouns) < 2:
         raise AppError('Only one name discovered')
-    return properNouns[0],properNouns[1]
+    first_name = properNouns[0]
+    first_name = ("".join([first_name[0].upper(),first_name[1:len(first_name)]]))        
+    surname = properNouns[1]
+    surname = ("".join([surname[0].upper(),surname[1:len(surname)]]))
+    return first_name,surname
     
 # Find the words matching the region name
 def findRegion(message,sens=70):
