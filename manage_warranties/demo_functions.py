@@ -32,10 +32,12 @@ def getTextInfoSimple(message, debug=False):
     region = findRegion(message.lower())
     if debug:
         print "Region found is %s" % region
-    # Remove non-Proper-nouns
-    properNouns = selectProperNouns(words)
     # Remove any region matches
-    words = removeRegions(properNouns, region)
+    words = removeRegions(words, region)
+    # Remove non-Proper-nouns
+    # Replaced - properNouns = selectProperNouns(words)
+    
+    
     # Find the names
     forename, surname = getNames(words)
     
