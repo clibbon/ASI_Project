@@ -43,6 +43,9 @@ def checkCustomer(detailDict,mob_num):
         region = regions.index(detailDict['Region'])
         )
     
+    if newCustomer:
+        print 'New customer created'
+    
     return c.cid
     
 # Function checks if a product exists
@@ -51,6 +54,9 @@ def checkProduct(detailDict):
         ser_num = detailDict['SerNo'],
         model = detailDict['ModNo']
         )
+    
+    if newProduct:
+        print 'New product created'
         
     return p.pid
 
@@ -70,7 +76,7 @@ def addToDatabase(detailDict,mob_num):
     pId = checkProduct(detailDict)
     # Check if a warranty exists already
     if warrantyExists(cId,pId):
-       return [False, cId, pId]
+        return [False, cId, pId]
     else:
         print 'Tried creating warranty'
         createWarranty(detailDict,cId,pId)

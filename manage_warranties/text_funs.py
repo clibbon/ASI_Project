@@ -17,8 +17,6 @@ class AppError(Exception):
     """ Class for all my errors from this app"""
     pass
 
-
-
 def getTextInfo(message, debug=False):
     # Remove all non alpha numeric characters
     message = re.sub(r'([^\s\w]|_)+', '', message) 
@@ -27,12 +25,17 @@ def getTextInfo(message, debug=False):
     words = message.split()
     # Identify model no and serial no
     serNum, modelNum, words = findModelNums(words)
+    if debug:
+        print "After identification of serial/model num"
+        print serNum, modelNum, words
     # Find the region
-    region = findRegion(message)
+    region = findRegion(message.lower())
+    if debug:
+        print "Region found is %s" % region
     # Remove non-Proper-nouns
     properNouns = selectProperNouns(words)
     # Remove any region matches
-    words = removeRegions(words)
+    words = removeRegions(properNouns)
     # Find the names
     forename, surname = getNames(words)
     
@@ -70,6 +73,7 @@ def getDetailsFromCookie(request):
         'loaded properly')
     return detailDict
 
+# Find the alphanumeric values in the input string
 def findModelNums(words):
     possibleMatches = [] 
     for word in words:
@@ -106,42 +110,57 @@ def findModelNums(words):
     words.remove(modelNum)
     return (serNum, modelNum, words)
 
+# Return the names from the list of proper nouns
 def getNames(properNouns):
     if len(properNouns) > 2:
         raise AppError('Too many names discovered')
+    elif len(properNouns) < 2:
+        raise AppError('Only one name discovered')
     return properNouns[0],properNouns[1]
     
-def findRegion(message):
+# Find the words matching the region name
+def findRegion(message,sens=70):
+    ''' message is a string of the entire message (with punctuation removed)
+    sens is the sensitivity of the fuzzy matcher. Lower = less specific '''
     ratio = []
     # String match region names
     for region in regions:
-        ratio.append(fuzz.partial_ratio(message,region))
+        ratio.append(fuzz.partial_ratio(message,region.lower()))
     
-    if max(ratio) > 80:
+    if max(ratio) > sens:
         idx = ratio.index(max(ratio))
     else:
         raise AppError('Could not identify a region')
     return regions[idx]
 
+# Selects only proper nouns from the word list. 
 def selectProperNouns(words):
     properNouns = []
     taggedWords = pos_tag(words)
-    for (word, type) in taggedWords:
-        if type == 'NNP':
+    for (word, kind) in taggedWords:
+        if kind == 'NNP':
             properNouns.append(word)
     return properNouns
     
     
-def removeRegions(words):
+    
+# Remove found regions from the words list
+def removeRegions(words, region, sens=70):
+    ''' Again sensitivity is the sensitivity of the fuzzy matcher
+    and words a list of the words in the message'''
+    # See if region consists of two words
+    reg_words = region.split()
     newList = []
     for word in words:
         temp = []
-        for region in regions:
+        for region in reg_words:
             temp.append(fuzz.partial_ratio(word.lower(),
                                            region.lower()))
-        if max(temp) < 90:
+        if max(temp) < sens:
             newList.append(word)
     return newList
+        
+        
         
 # Function extracts keywords from the message (it's the first word)
 def getKeyWord(msgText):
@@ -156,14 +175,3 @@ def generateConfirmationReply(pId, cId):
 def existingWarrantyReply(pId, cId):
     return 'Warranty already exists'
     
-# Function to generate a response
-def generateSuccessReplyDemo(detailDict):
-    
-    msgText = (
-        'Thankyou for registering. Your details are: \n'
-        'Name - %(ForeName)s %(SurName)s, \n'
-        'SerNo -  %(SerNo)s, \n' 
-        'Model %(ModNo)s, \n'
-        'Region %(Region)s. \n'
-        % detailDict)
-    return msgText
