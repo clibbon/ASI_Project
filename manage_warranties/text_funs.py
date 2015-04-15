@@ -35,7 +35,7 @@ def getTextInfo(message, debug=False):
     # Remove non-Proper-nouns
     properNouns = selectProperNouns(words)
     # Remove any region matches
-    words = removeRegions(properNouns)
+    words = removeRegions(properNouns,region)
     # Find the names
     forename, surname = getNames(words)
     
