@@ -59,11 +59,11 @@ def demo_day_receiver(request):
         details = getTextInfoSimple(msgText)
         resp.message(generateSuccessReplyDemo(details))
         # Send message to my phone - comment out to stop sending these
-        '''client = TwilioRestClient(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+        client = TwilioRestClient(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
         msg = client.messages.create(to="+447759339709",
                               from_="+441475866042",
                               body = generateSuccessReplyDemo(details))
-        print msg'''
+        print msg
     except AppError as e:
         print e
         resp.message(errormessage)
