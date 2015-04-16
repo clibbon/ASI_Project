@@ -1,5 +1,5 @@
 import re
-from text_funs import findRegion, removeRegions, selectProperNouns, getNames
+from text_funs import findRegion, removeRegions
 
 class DemoError(Exception):
     """ Class for all my errors from this app"""
@@ -9,7 +9,7 @@ class DemoError(Exception):
 def generateSuccessReplyDemo(detailDict):
     msgText = (
         'Thankyou for registering. Your details are: \n'
-        'Name - %(ForeName)s %(SurName)s, \n'
+        'Name - %(Name)s, \n'
         'SerNo -  %(SerNo)s, \n' 
         'Region %(Region)s. \n'
         'Enjoy your ASI demo day!'
@@ -39,11 +39,10 @@ def getTextInfoSimple(message, debug=False):
     
     
     # Find the names
-    forename, surname = getNames(words)
+    name = ' '.join(words)
     
     detailDict = {
-    'ForeName' : forename,
-    'SurName' : surname,
+    'Name' : name,
     'SerNo' : serNum,
     'Region': region
     }

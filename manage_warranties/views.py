@@ -52,6 +52,7 @@ def demo_day_receiver(request):
     resp = twilio.twiml.Response()
     try:
         msgText = request.POST.__getitem__('Body')
+        print msgText
     except Exception as e:
         print e
     # Try to get details
@@ -63,7 +64,7 @@ def demo_day_receiver(request):
         msg = client.messages.create(to="+447759339709",
                               from_="+441475866042",
                               body = generateSuccessReplyDemo(details))
-        print msg
+        
     except AppError as e:
         print e
         resp.message(errormessage)

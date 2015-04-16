@@ -108,7 +108,7 @@ def findModelNums(words):
     # Remove words from list
     words.remove(serNum)
     words.remove(modelNum)
-    return (serNum, modelNum, words)
+    return (serNum, modelNum, words)    
 
 # Return the names from the list of proper nouns
 def getNames(properNouns):
