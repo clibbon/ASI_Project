@@ -64,7 +64,7 @@ def demo_day_receiver(request):
         msg = client.messages.create(to="+447759339709",
                               from_="+441475866042",
                               body = generateSuccessReplyDemo(details))
-        print generateSuccessReply(details)
+        #print generateSuccessReplyDemo(details)
     except AppError as e:
         print e
         resp.message(errormessage)
