@@ -4,11 +4,9 @@ import twilio.twiml
 from django_twilio.decorators import twilio_view
 from text_funs import *
 from db_funs import *
-from demo_functions import generateSuccessReplyDemo, getTextInfoSimple
 import sys
-from twilio.rest import TwilioRestClient
-from Warranty_bank.settings import TWILIO_AUTH_TOKEN, TWILIO_ACCOUNT_SID
-from manage_warranties.demo_functions import DemoError
+from django.views.generic.edit import CreateView
+from manage_warranties.models import ProductSellers
 
 # Create your views here.
 def index(request):
@@ -46,34 +44,7 @@ def cookie_test(request):
 # Demo day page - more robust and forwards message on to me
 @twilio_view
 def demo_day_receiver(request):
-    # Overarching try statement just in case
-    errormessage = 'Sorry your information could not be read. ' \
-                'Guess thats the way with live demos...'
-    resp = twilio.twiml.Response()
-    try:
-        msgText = request.POST.__getitem__('Body')
-        print msgText
-    except Exception as e:
-        print e
-    # Try to get details
-    try:
-        details = getTextInfoSimple(msgText)
-        resp.message(generateSuccessReplyDemo(details))
-        # Send message to my phone - comment out to stop sending these
-        client = TwilioRestClient(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
-        msg = client.messages.create(to="+447759339709",
-                              from_="+441475866042",
-                              body = generateSuccessReplyDemo(details))
-        #print generateSuccessReplyDemo(details)
-    except AppError as e:
-        print e
-        resp.message(errormessage)
-    except DemoError as e:
-        print e
-        resp.message(errormessage)
-    except Exception as e:
-        print e
-        resp.message(errormessage)
+
     return resp
 
 # Main page for handling text messages
@@ -136,3 +107,11 @@ def message_table(request):
     messages = MessageHistory.objects.all()
     context = {'latest_question_list': messages}
     return render(request, 'Listener/message_table.html', context)
+
+class CreateProductView(CreateView):
+    
+    model = ProductSellers
+    template_name = 'add_importer.html'
+    
+
+# def test_input_page(request):

@@ -1,5 +1,7 @@
 import re
 from text_funs import findRegion, removeRegions
+from Warranty_bank.settings import TWILIO_AUTH_TOKEN, TWILIO_ACCOUNT_SID # This is only used when you want to send a forwarding message onto my phone. 
+import twilio.twiml
 
 class DemoError(Exception):
     """ Class for all my errors from this app"""
@@ -71,7 +73,37 @@ def findSerNum(words):
     words.remove(serNum)
     return (serNum, words)
 
+# Historical view used to perform the demonstration. No longer needed in this simple form.
+def demoDayTextHandler(request):
+    # Overarching try statement just in case
+    errormessage = 'Sorry your information could not be read. ' \
+                'Guess thats the way with live demos...'
+    resp = twilio.twiml.Response()
+    try:
+        msgText = request.POST.__getitem__('Body')
+        print msgText
+    except Exception as e:
+        print e
+    # Try to get details
+    try:
+        details = getTextInfoSimple(msgText)
+        resp.message(generateSuccessReplyDemo(details))
+        # Send message to my phone - comment out to stop sending these
+        '''client = TwilioRestClient(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+        msg = client.messages.create(to="+447759339709",
+                              from_="+441475866042",
+                              body = generateSuccessReplyDemo(details))
+        #print generateSuccessReplyDemo(details)'''
+    except DemoError as e:
+        print e
+        resp.message(errormessage)
+    except DemoError as e:
+        print e
+        resp.message(errormessage)
+    except Exception as e:
+        print e
+        resp.message(errormessage)
 
-
+    return resp
 
 
